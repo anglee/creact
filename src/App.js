@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-
-import 'antd/dist/antd.css';
 import { Button } from 'antd';
 
 class App extends Component {
