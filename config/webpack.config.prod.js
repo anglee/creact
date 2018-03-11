@@ -28,6 +28,10 @@ const publicUrl = publicPath.slice(0, -1);
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+const fs  = require('fs');
+const lessToJs = require('less-vars-to-js');
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, '../src/ant-theme-vars.less'), 'utf8'));
+
 // Assert this just to be safe.
 // Development builds of React are slow and not intended for production.
 if (env.stringified['process.env'].NODE_ENV !== '"production"') {
@@ -88,9 +92,9 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/290
     // `web` extension prefixes have been added for better support
     // for React Native Web.
-    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+    extensions: ['.less', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
+
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -121,7 +125,7 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -147,11 +151,18 @@ module.exports = {
           {
             test: /\.(js|jsx|mjs)$/,
             include: paths.appSrc,
-            loader: require.resolve('babel-loader'),
-            options: {
-              
-              compact: true,
-            },
+            use: [
+                // 'debug-loader',
+                {
+                    loader: require.resolve('babel-loader'),
+                    options: {
+                        // compact: true,
+                        plugins: [
+                            ['import', {libraryName: "antd", style: true}]
+                        ]
+                    },
+                }
+            ]
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
@@ -212,6 +223,20 @@ module.exports = {
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
+            {
+                test: /\.less$/,
+                use: [
+                    {loader: "style-loader"},
+                    {loader: "css-loader"},
+                    {
+                        loader: "less-loader",
+                        options: {
+                            modifyVars: themeVariables,
+                            root: path.resolve(__dirname, './')
+                        }
+                    }
+                ]
+            },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.
           // This loader doesn't use a "test" so it will catch all modules
