@@ -4,8 +4,8 @@ import "./App.css";
 import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 import { Redirect, Route } from "react-router";
-import Page1 from "./Page1";
-import Page2 from "./Page2";
+import Page1 from "./Page1/Page1";
+import Page2 from "./Page2/Page2";
 
 const App = ({ store }) => (
   <Provider store={store}>

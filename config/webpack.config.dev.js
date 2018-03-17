@@ -25,7 +25,7 @@ const env = getClientEnvironment(publicUrl);
 const fs = require("fs");
 const lessToJs = require("less-vars-to-js");
 const themeVariables = lessToJs(
-  fs.readFileSync(path.join(__dirname, "../src/ant-theme-vars.less"), "utf8")
+  fs.readFileSync(path.join(__dirname, "./ant-theme-vars.less"), "utf8")
 );
 
 // This is the development configuration.
